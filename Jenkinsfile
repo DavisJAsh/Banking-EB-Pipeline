@@ -23,7 +23,7 @@ pipeline {
             steps {
                 sh '''#!/bin/bash
                 source venv/bin/activate
-                eb deploy Banking-EB-Pipeline --single
+                eb deploy Banking-EB-Pipeline
                 '''
             }
         }
