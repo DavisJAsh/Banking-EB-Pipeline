@@ -26,11 +26,17 @@ This workload focuses on automating the deployment process by integrating AWS CL
 
 11.**Editing the Jenkinsfile**    - Modified the Jenkinsfile to include a "Deploy" stage that uses `eb deploy` for deploying the application to AWS Elastic Beanstalk. This stage was added after ensuring that the build stage properly creates and activates the Python virtual environment.
 
-12.**Building and Deploying the Application**    - Pushed changes to GitHub, built the pipeline in Jenkins, and successfully deployed the application to AWS Elastic Beanstalk. Issues with the branch detachment were resolved by switching back to the main branch.
+12.**Building and Deploying the Application**    - Pushed changes to GitHub, built the pipeline in Jenkins, and successfully deployed the application to AWS Elastic Beanstalk. Issues with the branch detachment were resolved by switching back to the main branch. CHeck the log files to confirm the pipeline was successful.
+
+**Draw.IO:**
+
+<img src="./Image2.png" style="width:6.5in;height:7.14375in" />**  
 
 ## System Design Diagram
 
+**Draw.IO:**
 
+<img src="./Image1.png" style="width:6.5in;height:7.14375in" />**  
 
 ## Troubleshooting
 
