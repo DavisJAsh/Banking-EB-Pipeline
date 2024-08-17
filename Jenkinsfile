@@ -14,7 +14,7 @@ pipeline {
         stage ('Test') {
             steps {
                 sh '''#!/bin/bash
-                chmod +x system_resources_test.sh
+                chmod +x ./system_resources_test.sh
                 ./system_resources_test.sh
                 '''
             }
