@@ -19,5 +19,14 @@ pipeline {
                 '''
             }
         }
+	stage ('Deploy') {
+            steps {
+                sh '''#!/bin/bash
+                source venv/bin/activate
+                eb create Banking-EB-Pipeline --single
+                '''
+            }
+        }
+
     }
 }
