@@ -28,7 +28,6 @@ This workload focuses on automating the deployment process by integrating AWS CL
 
 12.**Building and Deploying the Application**    - Pushed changes to GitHub, built the pipeline in Jenkins, and successfully deployed the application to AWS Elastic Beanstalk. Issues with the branch detachment were resolved by switching back to the main branch. CHeck the log files to confirm the pipeline was successful.
 
-**Draw.IO:**
 
 <img src="./Image2.png" style="width:6.5in;height:7.14375in" />**  
 
