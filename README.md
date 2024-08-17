@@ -1,166 +1,52 @@
-# Kura Labs Cohort 5- Deployment Workload 2
-## CICD with AWS CLI:
+Purpose
 
-Welcome to Deployment Workload 2!  In the first deployment workload, we manually uploaded the source code to AWS EB.  Let’s start automating more of that pipeline.  
+This workload focuses on automating the deployment process by integrating AWS CLI into a Continuous Integration/Continuous Deployment (CI/CD) pipeline. This workload aims to automate the pipeline, improving efficiency and reducing the risk of human error.
 
-Be sure to document each step in the process and explain WHY each step is important to the pipeline.
+## Steps Taken:
 
-## Instructions
+1.**Cloning the Repository**   - Cloned the class repository to my own GitHub account to maintain version control and track changes.
 
-1. Clone this repo to your GitHub account
+2.**Creating AWS IAM Access Keys**   - Created AWS IAM access keys to securely connect and authenticate with AWS CLI. These keys are essential for accessing AWS resources programmatically. They must be securely stored to prevent unauthorized access, which could lead to severe security breaches.
 
-2. Create AWS Access Keys:
+3.**Creating an EC2 Instance for Jenkins**   - Set up a t2.micro EC2 instance to host the Jenkins server, which manages the CI/CD pipeline. The server was configured to support automated builds and deployments.
 
-   a. Navigate to the AWS servce: IAM (search for this in the AWS console)
+4.**Creating a System Resources Bash Script**   - Developed a Bash script (`system_resources_test.sh`) to monitor CPU usage.
 
-   b. Click on "Users" on the left side navigation panel
+5.**Setting Up GitHub Access**   - Configured GitHub access on the Jenkins server and securely stored the Personal Access Token on the AWS instance (not in the repository). This ensures that changes can be pushed to the repository without exposing sensitive credentials.
 
-   c. Click on your User Name
+6.**Setting Up a MultiBranch Pipeline in Jenkins**   - Connected the GitHub repository to Jenkins using a MultiBranch Pipeline, enabling automatic builds triggered by changes to any branch.
 
-   d. Underneath the "Summary" section, click on the "Security credentials" tab
+7.**Installing AWS CLI on the Jenkins Server**   - Installed AWS CLI on the Jenkins server to enable interaction with AWS services. This step required updating the server and installing necessary packages like `unzip`.
 
-   e. Scroll down to "Access keys" and click on "Create access key"
+8.**Configuring the Jenkins User**   - Created and configured a password for the `jenkins` user, granting it the necessary permissions by modifying the sudoers file.
 
-   f. Select the appropriate "use case", and then click "Next" and then "Create access key"
+9.**Activating the Python Virtual Environment**   - Navigated to the Jenkins workspace and activated a Python Virtual Environment. This environment isolates dependencies, ensuring consistent behavior across different environments.
 
- ACCESS KEYS CAN ONLY BE VIEWED ONCE! 
- 
- Be sure to save them somewhere (you will need these later) and NEVER upload the keys to any public repository.  
+10.**Installing AWS Elastic Beanstalk CLI**    - Installed and initialized the AWS Elastic Beanstalk CLI to manage the deployment of applications. Configured it to use the `us-east-1` region and the appropriate environment settings.
 
-NOTE: What are access keys and why would sharing them be dangerous? 
+11.**Editing the Jenkinsfile**    - Modified the Jenkinsfile to include a "Deploy" stage that uses `eb deploy` for deploying the application to AWS Elastic Beanstalk. This stage was added after ensuring that the build stage properly creates and activates the Python virtual environment.
 
+12.**Building and Deploying the Application**    - Pushed changes to GitHub, built the pipeline in Jenkins, and successfully deployed the application to AWS Elastic Beanstalk. Issues with the branch detachment were resolved by switching back to the main branch.
 
-3. Create a t2.micro EC2 for your Jenkins Server (IMPORTANT: include ALL commands from Workload 1 step 3b to do so)
-
-4. Create a BASH script called "system_resources_test.sh" that checks for system resources (can be memory, cpu, disk, all of the above and/or more) and push it to the GH repo. IMPORTANT: make sure you use conditional statements and exit codes (0 or 1) if any resource exceeds a certain threshold.
-
-SEE: https://www.geeksforgeeks.org/how-to-use-exit-code-to-read-from-terminal-from-script-and-with-logical-operators/ for more information
-
-Note: Why are exit codes important? Especially if running the script through a CICD Pipeline?
-
-5. Create a MultiBranch Pipeline and connect your GH repo to it (build should start automatically)
-
-6. Back in the Jenkins Server Terminal- Install AWS CLI on the Jenkins Server with the following commands:
-
-```
-$curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-$unzip awscliv2.zip
-$sudo ./aws/install
-$aws --version 
-```
-
-If AWS CLI was installed properly the version number will output to the terminal.
-
-7. Switch to the user "jenkins"
-
-    a. create a password for the user "jenkins" by running: 
-  
-  ```
-  $sudo passwd jenkins
-  ```
-
-  b. switch to the jenkins user by running:
-
-  ```
-  sudo su - jenkins
-  ```
-
-8. Navigate to the pipeline directory within the jenkins "workspace"
-
-```
-cd workspace/[name-of-multibranch-pipeline]
-```
-
-you should be able to see the application source code from this directory
-
-9. Activate the Python Virtual Environment
-
-```
-source venv/bin/activate
-```
-NOTE: Python Virtual Environments are usually created by running the command `python3 -m venv [name-of-environment]`.  What is a virtual environment? Why is it important/necessary? and when was this one (venv) created? HINT: See step 13 below.
+## System Design Diagram
 
 
-10. Install AWS EB CLI on the Jenkins Server with the following commands:
 
-```
-$pip install awsebcli
-$eb --version
-```
-If AWS EB CLI was installed properly the version number will output to the terminal
+## Troubleshooting
 
-11. Configure AWS CLI with the folling command:
+1.**Jenkins User Permissions**   - The `jenkins` user could not use `sudo` commands. This was resolved by adding the `jenkins` user to the sudoers file.
 
-```
-$aws configure
-```
-   a. Enter your access key
+2.**Branch Detachment**   - Encountered a branch detachment issue while pushing changes. This was resolved by switching to the main branch and using a GitHub token for authentication.
 
-   b. Enter your secret access key
+3.**Cannot Find Script**   - Make sure the file is located in the correct directory and that the path is correct.
 
-   c. region: "us-east-1"
-
-   d. output format" "json"
-
-   e. check to see if AWS CLI has been configured by entering:
-
-``` 
-$aws ec2 describe-instances 
-```
+4.**Elastic BeanStalk Already Present**   - Change the Jenkinsfile from  `eb create` to  `eb deploy`. Make sure to remove the  `--single` from this line as well.
 
 
-12. Initialize AWS Elastic Beanstalk CLI
+## Optimization
 
-    a. run the following command:
-  ```
-  eb init
-  ```
-  
-   b. Set the default region to: us-east-1
+Using a deploy stage in the CI/CD pipeline significantly increases business efficiency by automating the deployment process. This reduces the time and effort required for manual deployments, ensuring consistent and reliable releases. However, automating deployments to production environments can introduce risks such as deploying untested code. To mitigate this, it’s essential to implement thorough testing stages and require manual approval before deploying to production.
 
-   c. Enter an application name (or leave it as default)
+## Conclusion
 
-   d. Select python3.7
-
-   e. Select "no" for code commit
-
-   f. Select "yes" for SSH and select a "KeyPair"
-
-13. Add a "deploy" stage to the Jenkinsfile 
-
-    a. use your text editor of choice to edit the "jenkinsfile"
-
-    b. add the following code block (modify the code with your environment name and remove the square brackets) AFTER the "Test" Stage:
-
-  ```
-  stage ('Deploy') {
-            steps {
-                sh '''#!/bin/bash
-                source venv/bin/activate
-                eb create [enter-name-of-environment-here] --single
-                '''
-            }
-        }
-  ```
-IMPORTANT: THE SYNTAX OF THE JENKINSFILE IS VERY SPECIFIC! MAKE SURE THAT THE STAGES AND CURLY BRACKETS ARE IN THE CORRECT ORDER OTHERWISE THE PIPELINE WILL NOT BUILD!
-See https://www.jenkins.io/doc/book/pipeline/syntax/ for more information.
-
-  c. Push these changes to the GH Repository
-
-14. Navigate back to the Jenkins Console and build the pipeline again.
-
-If the pipeline sucessfully completes, navigate to AWS Elastic Beanstalk in the AWS Console and check for the environment that is created. The application should be running at the domain created by Elastic Beanstalk.
-
-15. Document! All projects have documentation so that others can read and understand what was done and how it was done. Create a README.md file in your repository that describes:
-
-	  a. The "PURPOSE" of the Workload,
-
-  	b. The "STEPS" taken (and why each was necessary/important,
-
-  	c. A "SYSTEM DESIGN DIAGRAM" that is created in draw.io,
-
-	  d. "ISSUES/TROUBLESHOOTING" that may or may have occured,
-
-  	e. An "OPTIMIZATION" section for that answers the question: How is using a deploy stage in the CICD pipeline able to increase efficiency of the buisiness?  What issues, if any, can you think of that might come with automating source code to a production environment? How would you address/resolve this?
-
-    f. A "CONCLUSION" statement as well as any other sections you feel like you want to include.
+This workload provided hands-on experience with automating the deployment process using AWS CLI, Jenkins, and Elastic Beanstalk. By integrating these tools into a CI/CD pipeline, we can streamline deployments, reduce errors, and improve overall efficiency.
